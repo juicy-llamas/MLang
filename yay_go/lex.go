@@ -26,6 +26,25 @@ const (
 	End
 )
 
+const TokenIndex &str[...] = {
+	"Line",
+	"Ident",
+	"Number",
+	"Equal",
+	"Plus",
+	"Minus",
+	"Slash",
+	"Ast",
+	"ParenL",
+	"ParenR",
+	"BrackL",
+	"BrackR",
+	"BackSl",
+	"For",
+	"If",
+	"End"
+}
+
 type Token struct {
 	code TokenCode
 	line int
