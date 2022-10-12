@@ -1,4 +1,4 @@
-package lex
+package ast
 
 import (
 	"fmt"
@@ -23,6 +23,7 @@ const (
 	Amp		// &
 	Pipe	// |
 	Dot		// .
+	Comma	// ,
 	Colon	// :
 	Quest	// ?
 	BkTick	// `
@@ -88,7 +89,8 @@ var TokenIndex = [...]string{
 	"Exclam",
 	"Amp",
 	"Pipe",
-	"Dot",
+	"Dot",,
+	"Comma",
 	"Colon",
 	"Quest",
 	"BkTick",
@@ -135,6 +137,69 @@ var TokenIndex = [...]string{
 	"Invalid",
 }
 
+var TokenVal = [...]string{
+	"\n",
+	"\t",
+	"(identifier)",
+	"(number)",
+	"=",
+	"+",
+	"-",
+	"/",
+	"*",
+	"^",
+	"~",
+	"!",
+	"&",
+	"|",
+	".",
+	",",
+	":",
+	"?",
+	"`",
+	"'",
+	"\"",
+	"(",
+	")",
+	"[",
+	"]",
+	"<",
+	">",
+	"<<",
+	">>",
+	"==",
+	">=",
+	"<=",
+	"&&",
+	"||",
+	"**",
+	"->",
+	"+=",
+	"-=",
+	"*=",
+	"/=",
+	"^=",
+	"&=",
+	"|=",
+	"!=",
+	"~=",
+	"**=",
+	"<<=",
+	">>=",
+	"\\",
+	"while ",
+	"for ",
+	"if ",
+	"else ",
+	"(eof)",
+	"let ",
+	"fn ",
+	"struct ",
+	"include ",
+	"(comment)",
+	"(invalid)",
+}
+
 type Token struct {
 	code TokenCode
 	line int
@@ -142,12 +207,23 @@ type Token struct {
 	data string
 }
 
-func (t *Token) String () string {
+func (t *Token) DbgString () string {
 	return fmt.Sprintf( "{ %v, %v, %v, \"%v\" }", t.code.String(), t.line, t.col, t.data );
+}
+
+func (t *Token) String () string {
+	if t.code == Ident || t.code == Number {
+		return t.data
+	} else if t.code == Comment {
+		return fmt.Sprintf( "/*%v*/", t.data )
+	} else {
+		return TokenVal[ t.code ];
+	}
 }
 
 type Lexer struct {
 	stream *bufio.Scanner
+	fname string
 	slice []byte
 	line int
 	col int
@@ -250,6 +326,8 @@ func ( l *Lexer ) GetToken () ( Token, error ) {
 				l.branchSc( '|', COr, Pipe, &ret )
 			}
 		case '.':
+			ret = Token{ Dot, l.line, l.col, "" }
+		case ',':
 			ret = Token{ Dot, l.line, l.col, "" }
 		case ':':
 			ret = Token{ Colon, l.line, l.col, "" }
@@ -358,13 +436,13 @@ func ( l *Lexer ) New ( name string ) ( *Lexer, error ) {
 	} else {
 		scanner := bufio.NewScanner( file )
 		scanner.Split( bufio.ScanLines )
-		l = &Lexer{ scanner, nil, 0, 0, 0 }
+		l = &Lexer{ scanner, file, nil, 0, 0, 0 }
 		return l, nil
 	}
 }
 
 func NewLex ( name string ) ( *Lexer, error ) {
-	ret := &Lexer{};
+	ret := Lexer{};
 	return ret.New( name )
 }
 
