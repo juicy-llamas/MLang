@@ -89,7 +89,7 @@ var TokenIndex = [...]string{
 	"Exclam",
 	"Amp",
 	"Pipe",
-	"Dot",,
+	"Dot",
 	"Comma",
 	"Colon",
 	"Quest",
@@ -436,7 +436,7 @@ func ( l *Lexer ) New ( name string ) ( *Lexer, error ) {
 	} else {
 		scanner := bufio.NewScanner( file )
 		scanner.Split( bufio.ScanLines )
-		l = &Lexer{ scanner, file, nil, 0, 0, 0 }
+		l = &Lexer{ scanner, name, nil, 0, 0, 0 }
 		return l, nil
 	}
 }

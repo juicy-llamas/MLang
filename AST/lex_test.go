@@ -11,7 +11,7 @@ var tOne = [...]Token{
 	Token{ Line, 1, 4, "" },
 	Token{ Ident, 2, 0, "the" },
 	Token{ Line, 2, 3, "" },
-	Token{ Ident, 3, 0, "faku" },
+	Token{ Ident, 3, 0, "what" },
 	Token{ Line, 3, 4, "" },
 	Token{ Line, 4, 0, "" },
 	Token{ Ident, 5, 0, "a" },
